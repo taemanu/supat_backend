@@ -27,3 +27,13 @@ Route::group([
     $router->post('/user', 'AuthController@user');
 
 });
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'po'
+], function ($router) {
+    $router->get('/list/{type}', 'PurchaseOrderController@listPO');
+    $router->post('/create', 'PurchaseOrderController@createPO');
+    $router->post('/approve/{id}', 'PurchaseOrderController@approve');
+    $router->post('/cancel/{id}', 'PurchaseOrderController@cancel');
+});
