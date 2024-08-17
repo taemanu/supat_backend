@@ -1,0 +1,14 @@
+{
+  "name": "Laravel PHP",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "supat_backend",
+  "workspaceFolder": "/var/www",
+  "settings": {
+    "php.validate.executablePath": "/usr/local/bin/php"
+  },
+  "extensions": [
+    "felixfbecker.php-debug",
+    "bmewburn.vscode-intelephense-client",
+    "amiralizadeh9480.laravel-extra-intellisense"
+  ]
+}
