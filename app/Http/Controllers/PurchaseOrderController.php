@@ -23,8 +23,10 @@ class PurchaseOrderController extends Controller
             } else {
                 $q->whereIn('status', [$type]);
             }
-        })->get();
-        return $this->ok($$data, 'success !');
+        })
+        ->orderBy('id','desc')
+        ->get();
+        return $this->ok($data, 'success !');
     }
 
     public function createPO(Request $request) {
@@ -56,18 +58,10 @@ class PurchaseOrderController extends Controller
         }
     }
 
-    public function approve($id) {
+    public function approval($type, $id) {
 
         $data = PurchaseOrder::find($id);
-        $data->status = 'success';
-        $data->save();
-        return $this->ok([], 'success !');
-    }
-
-    public function cancel($id) {
-
-        $data = PurchaseOrder::find($id);
-        $data->status = 'cancel';
+        $data->status = $type=='approve'?'success':'cancel';
         $data->save();
         return $this->ok([], 'success !');
     }

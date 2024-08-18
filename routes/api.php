@@ -34,6 +34,5 @@ Route::group([
 ], function ($router) {
     $router->get('/list/{type}', 'PurchaseOrderController@listPO');
     $router->post('/create', 'PurchaseOrderController@createPO');
-    $router->post('/approve/{id}', 'PurchaseOrderController@approve');
-    $router->post('/cancel/{id}', 'PurchaseOrderController@cancel');
+    $router->get('/{type}/{id}', 'PurchaseOrderController@approval');
 });
