@@ -36,3 +36,11 @@ Route::group([
     $router->post('/create', 'PurchaseOrderController@createPO');
     $router->get('/{type}/{id}', 'PurchaseOrderController@approval');
 });
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'customer'
+], function ($router) {
+    $router->post('/store', 'CustomerController@store');
+    $router->get('/get-data-list', 'CustomerController@listCustomer');
+});
