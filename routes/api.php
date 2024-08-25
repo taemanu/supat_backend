@@ -44,3 +44,15 @@ Route::group([
     $router->post('/store', 'CustomerController@store');
     $router->get('/get-data-list', 'CustomerController@listCustomer');
 });
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'qt'
+], function ($router) {
+    $router->get('/list', 'QuotationController@index');
+    $router->get('/create', 'QuotationController@create');
+    $router->post('/store', 'QuotationController@store');
+    $router->get('/edit/{id}', 'QuotationController@edit');
+    $router->post('/update/{id}', 'QuotationController@update');
+    $router->delete('/destroy/{id}', 'QuotationController@destroy');
+});
