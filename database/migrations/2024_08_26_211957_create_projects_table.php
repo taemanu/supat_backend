@@ -17,15 +17,14 @@ class CreateProjectsTable extends Migration
             $table->id();
             $table->string('p_code')->nullable();
             $table->string('p_name')->nullable();
+            $table->string('id_qt')->nullable();
             $table->date('date_start')->nullable();
             $table->date('date_end')->nullable();
             $table->json('file_work_form')->nullable();
             $table->json('file_contract')->nullable();
-            $table->unsignedBigInteger('quotations_id');
-            $table->enum('status', ['pending', 'success', 'cancel']);
+            $table->enum('status', ['padding','success','reject'])->default('padding');
+            $table->text('remake')->nullable();
             $table->timestamps();
-
-            $table->foreign('quotations_id')->references('id')->on('quotations')->onDelete('cascade');
         });
     }
 

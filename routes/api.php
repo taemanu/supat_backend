@@ -57,3 +57,13 @@ Route::group([
     $router->post('/update/{id}', 'QuotationController@update');
     $router->delete('/destroy/{id}', 'QuotationController@destroy');
 });
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'project'
+], function ($router) {
+    $router->post('/store', 'ProjectController@store');
+    $router->get('/get-data-list', 'ProjectController@listProject');
+    $router->post('/change-status', 'ProjectController@ChangeStatus');
+    $router->get('/project-detail/{code}', 'ProjectController@projectDetail');
+});
