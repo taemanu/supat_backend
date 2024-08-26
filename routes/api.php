@@ -43,6 +43,7 @@ Route::group([
 ], function ($router) {
     $router->post('/store', 'CustomerController@store');
     $router->get('/get-data-list', 'CustomerController@listCustomer');
+    $router->post('/change-status', 'CustomerController@ChangeStatus');
 });
 
 Route::group([

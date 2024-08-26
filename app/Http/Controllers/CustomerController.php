@@ -35,10 +35,28 @@ class CustomerController extends Controller
         }
     }
 
+    public function ChangeStatus(Request $request)
+    {
+        $customer = Customer::FindId($request->id_customer)->first();
+
+        if ($customer) {
+            $customer->status = $customer->status === "active" ? 'inactive' : 'active';
+            $customer->save();
+
+            return $this->ok([], 'success !');
+        }
+
+        return response()->json([
+            'message' => 'Customer not found.'
+        ], 404);
+
+    }
+
     public function listCustomer()
     {
         $data_list = Customer::orderBy('id','desc')->get();
 
         return $data_list;
     }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DateTimeImmutable;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\User;
@@ -21,7 +22,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-
         $validated = $request->validate([
             'user_id' => 'required',
             'password' => 'required|min:6',
@@ -31,11 +31,15 @@ class AuthController extends Controller
 
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
-                $token_validity = (24 * 60);
+                $token_validity = 24 * 60; // 24 hours in minutes
 
-                $this->guard()->factory()->setTTL($token_validity);
+                // ใช้ DateTimeImmutable สำหรับการตั้งค่าเวลาหมดอายุ
+                $expiration = new DateTimeImmutable('+' . $token_validity . ' minutes');
 
-                if (!$token = $this->guard()->attempt($validated)) {
+                // สร้าง token ด้วยการระบุเวลาหมดอายุแบบ DateTimeImmutable
+                $token = $this->guard()->claims(['exp' => $expiration])->attempt($validated);
+
+                if (!$token) {
                     return response()->json(['error' => 'Unauthorized'], 401);
                 }
 
