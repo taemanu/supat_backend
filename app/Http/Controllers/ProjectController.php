@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Project;
-use Haruncpi\LaravelIdGenerator\IdGenerator;
+use App\ProjectTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class ProjectController extends Controller
 {
@@ -91,8 +92,19 @@ class ProjectController extends Controller
             $data->date_start = $request->date_contract ?? '';
             $data->date_end = $request->date_end ?? '';
             $data->remake = $request->note ?? '';
-            $data->status = $request->status == 1 ? 'pedding' : 'success';
+            $data->status = $request->status == 1 ? 'padding' : 'success';
             $data->save();
+
+            if(count($request->task) != 0){
+                foreach($request->task as $item){
+                    $task = new ProjectTask;
+                    $task->p_code = $data->id;
+                    $task->task_name =  $item['task'] ??'';
+                    $task->percent = $item['percent'] ??'';
+                    $task->save();
+                }
+
+            }
 
             DB::commit();
 
@@ -141,6 +153,15 @@ class ProjectController extends Controller
 
         return $data;
     }
+
+    public function tasktDetail($code)
+    {
+        $data = ProjectTask::where('p_code',$code)->get();
+
+        return $data;
+    }
+
+
 
 
 }

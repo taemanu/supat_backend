@@ -66,4 +66,5 @@ Route::group([
     $router->get('/get-data-list', 'ProjectController@listProject');
     $router->post('/change-status', 'ProjectController@ChangeStatus');
     $router->get('/project-detail/{code}', 'ProjectController@projectDetail');
+    $router->get('/task_detail/{code}', 'ProjectController@tasktDetail');
 });
