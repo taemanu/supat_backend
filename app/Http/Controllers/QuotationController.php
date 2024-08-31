@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Customer;
 use App\Quotation;
 use App\QuotationList;
-use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class QuotationController extends Controller
 {
@@ -16,7 +17,9 @@ class QuotationController extends Controller
         return $this->ok($data, 'success !');
     }
 
-    public function create() {
+    public function create($id) {
+
+        $customer = Customer::findId($id)->first();
         $config = [
             'table' => 'quotations',
             'field' => 'qt_code',
@@ -27,9 +30,10 @@ class QuotationController extends Controller
         // now use it
         $qt_code = IdGenerator::generate($config);
         $res = [
-            'qt_code' => $qt_code
+            'qt_code' => $qt_code,
+            'customer_data' => $customer
         ];
-        return $this->ok($res, 'ok');
+        return $this->ok($res, 'OK');
     }
 
     public function store(Request $request) {

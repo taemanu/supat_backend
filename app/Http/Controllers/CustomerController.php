@@ -5,15 +5,28 @@ use App\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class CustomerController extends Controller
 {
     public function store(Request $request)
     {
+
+        $config = [
+            'table' => 'customers',
+            'field' => 'customer_code',
+            'length' => 11,
+            'prefix' => 'CS-'.rand(1000, 9999),
+            'reset_on_prefix_change' => true
+        ];
+        // now use it
+        $customer_code = IdGenerator::generate($config);
+
         DB::beginTransaction();
         try {
             $data = new Customer;
             $data->address = $request->address ?? '';
+            $data->customer_code = $customer_code;
             $data->email = $request->email ?? '';
             $data->id_tax = $request->id_card ?? '';
             $data->firstname = $request->firstname ?? '';
@@ -54,7 +67,7 @@ class CustomerController extends Controller
 
     public function listCustomer()
     {
-        $data_list = Customer::orderBy('id','desc')->get();
+        $data_list = Customer::Select('customers.*','quotations.id as id_qt')->LeftJoin('quotations', 'quotations.customer_code', '=', 'customers.customer_code')->orderBy('customers.id','desc')->get();
 
         return $data_list;
     }

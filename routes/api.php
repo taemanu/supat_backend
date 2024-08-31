@@ -51,7 +51,7 @@ Route::group([
     'prefix' => 'qt'
 ], function ($router) {
     $router->get('/list', 'QuotationController@index');
-    $router->get('/create', 'QuotationController@create');
+    $router->get('/create/{id_customer}', 'QuotationController@create');
     $router->post('/store', 'QuotationController@store');
     $router->get('/edit/{id}', 'QuotationController@edit');
     $router->post('/update/{id}', 'QuotationController@update');
