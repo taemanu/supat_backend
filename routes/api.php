@@ -67,4 +67,5 @@ Route::group([
     $router->post('/change-status', 'ProjectController@ChangeStatus');
     $router->get('/project-detail/{code}', 'ProjectController@projectDetail');
     $router->get('/task_detail/{code}', 'ProjectController@tasktDetail');
+    $router->get('/get-project-from-customer/{code}', 'ProjectController@getProjectFromCustomer');
 });

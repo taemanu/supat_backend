@@ -13,7 +13,16 @@ use Haruncpi\LaravelIdGenerator\IdGenerator;
 class QuotationController extends Controller
 {
     public function index() {
-        $data = Quotation::all();
+        $data = Quotation::select(
+            'quotations.*',
+            'customers.id as customer_id',
+            'customers.customer_code as customer_code',
+            'customers.firstname',
+            'customers.lastname'
+            )
+            ->leftjoin('customers','customers.customer_code','quotations.customer_code')
+
+            ->get();
         return $this->ok($data, 'success !');
     }
 
