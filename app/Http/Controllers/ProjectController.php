@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Project;
+use App\Quotation;
 use App\ProjectTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -91,6 +92,7 @@ class ProjectController extends Controller
             $data->id_qt = $request->code_quo ?? '';
             $data->date_start = $request->date_contract ?? '';
             $data->date_end = $request->date_end ?? '';
+            $data->customer_code = $request->customer_code ?? '';
             $data->remake = $request->note ?? '';
             $data->status = $request->status == 1 ? 'padding' : 'success';
             $data->save();
@@ -159,6 +161,51 @@ class ProjectController extends Controller
         $data = ProjectTask::where('p_code',$code)->get();
 
         return $data;
+    }
+
+    public function getProjectFromCustomer($code)
+    {
+
+        $pj_code = null;
+        $project = Project::where('customer_code',$code)->first();
+        $task_list = [];
+
+        if($project){
+            $pj_code = $project->p_code;
+
+
+            $data = Quotation::select('projects.*','quotations.qt_code','quotations.qt_name')
+                                ->leftjoin('projects','projects.id_qt','quotations.qt_code')
+                                ->where('quotations.customer_code',$project->customer_code)->first();
+
+            $task_list = ProjectTask::where('p_code',$project->id)->get();
+
+        }else{
+            $config = [
+                'table' => 'projects',
+                'field' => 'p_code',
+                'length' => 11,
+                'prefix' => 'PJ-'.rand(1000, 9999),
+                'reset_on_prefix_change' => true
+            ];
+
+            $pj_code = IdGenerator::generate($config);
+
+            $data = Quotation::select('projects.*','quotations.qt_code','quotations.qt_name','quotations.customer_code')
+                            ->where('quotations.customer_code',$code)
+                            ->leftjoin('projects','quotations.id','projects.id_qt')
+                            ->first();
+        }
+
+
+
+        $res = [
+            'pj_code' => $pj_code,
+            'project_data' => $data,
+            'task_list' => $task_list
+        ];
+        return $this->ok($res, 'OK');
+
     }
 
 

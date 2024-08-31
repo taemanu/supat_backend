@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateAddCustomerCodeCustomerTable extends Migration
+class UpdateCustomerCodeProjectsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class UpdateAddCustomerCodeCustomerTable extends Migration
      */
     public function up()
     {
-        Schema::table('customers', function (Blueprint $table) {
-            $table->string('customer_code')->after('id')->nullable();
+        Schema::table('projects', function (Blueprint $table) {
+            $table->string('customer_code')->after('p_name')->nullable();
         });
     }
 
@@ -25,7 +25,7 @@ class UpdateAddCustomerCodeCustomerTable extends Migration
      */
     public function down()
     {
-        Schema::table('customers', function (Blueprint $table) {
+        Schema::table('projects', function (Blueprint $table) {
             $table->dropColumn('customer_code');
         });
     }
