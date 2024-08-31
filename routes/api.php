@@ -68,3 +68,16 @@ Route::group([
     $router->get('/project-detail/{code}', 'ProjectController@projectDetail');
     $router->get('/task_detail/{code}', 'ProjectController@tasktDetail');
 });
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'employee'
+], function ($router) {
+    $router->get('/', 'ProjectController@index');
+    $router->post('/store', 'ProjectController@store');
+    $router->get('/edit/{id}', 'ProjectController@edit');
+    $router->put('/update/{id}', 'ProjectController@update');
+    $router->get('/listCompensation/{id}', 'ProjectController@listCompensation');
+    $router->post('/compensationStore/{id}', 'ProjectController@compensationStore');
+    $router->put('/compensationUpdate/{id}', 'ProjectController@compensationUpdate');
+});
