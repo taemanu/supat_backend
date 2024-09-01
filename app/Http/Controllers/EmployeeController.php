@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Log;
 
 class EmployeeController extends Controller
 {
-    public function inex() {
-        $data = Employee::all();
+    public function index() {
+        $data = Employee::with('user')->get();
         return $this->ok($data);
     }
 
     public function create() {
-        
+
     }
 
     public function store(Request $request) {
@@ -31,8 +31,8 @@ class EmployeeController extends Controller
             $user = new User;
             $user->email = $email;
             $user->name = $request->name;
-            $user->password = Hash::make($request->password);
-            $user->password_user = $request->password;
+            $user->password = Hash::make('123456');
+            $user->password_user = '123456';
             $user->user_id = $username;
             $user->status = 'active';
             $user->role = 'employee';
@@ -43,11 +43,11 @@ class EmployeeController extends Controller
             $emp->role = $request->role;
             $emp->tel = $request->tel;
             $emp->slary = $request->slary;
-            $emp->user_id = $request->user_id;
+            $emp->user_id = $user->id;
             $emp->save();
 
             DB::commit();
-            return $this->ok(null); 
+            return $this->ok(null);
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('error: '.$e->getMessage());
@@ -71,7 +71,7 @@ class EmployeeController extends Controller
             $emp->user_id = $request->user_id;
             $emp->save();
             DB::commit();
-            return $this->ok(null); 
+            return $this->ok(null);
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('error: '.$e->getMessage());
@@ -80,7 +80,7 @@ class EmployeeController extends Controller
     }
 
     public function destroy($id) {
-        
+
     }
 
     public function listCompensation($id) {
@@ -99,7 +99,7 @@ class EmployeeController extends Controller
             $data->employees_id = $id;
             $data->save();
             DB::commit();
-            $this->ok(null);
+            return $this->ok(null);
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('error: '.$e->getMessage());
@@ -129,6 +129,6 @@ class EmployeeController extends Controller
     public function compensationDestroy($id) {
         $data = Slary::find($id);
         $data->delete();
-        $this->ok(null);
+        return $this->ok(null);
     }
 }

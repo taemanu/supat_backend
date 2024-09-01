@@ -74,11 +74,12 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'employee'
 ], function ($router) {
-    $router->get('/', 'ProjectController@index');
-    $router->post('/store', 'ProjectController@store');
-    $router->get('/edit/{id}', 'ProjectController@edit');
-    $router->put('/update/{id}', 'ProjectController@update');
-    $router->get('/listCompensation/{id}', 'ProjectController@listCompensation');
-    $router->post('/compensationStore/{id}', 'ProjectController@compensationStore');
-    $router->put('/compensationUpdate/{id}', 'ProjectController@compensationUpdate');
+    $router->get('/', 'EmployeeController@index');
+    $router->post('/store', 'EmployeeController@store');
+    $router->get('/edit/{id}', 'EmployeeController@edit');
+    $router->put('/update/{id}', 'EmployeeController@update');
+    $router->get('/listCompensation/{id}', 'EmployeeController@listCompensation');
+    $router->post('/compensationStore/{id}', 'EmployeeController@compensationStore');
+    $router->put('/compensationUpdate/{id}', 'EmployeeController@compensationUpdate');
+    $router->delete('/compensationDestroy/{id}', 'EmployeeController@compensationDestroy');
 });
