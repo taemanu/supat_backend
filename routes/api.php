@@ -33,6 +33,7 @@ Route::group([
     'prefix' => 'po'
 ], function ($router) {
     $router->get('/list/{type}', 'PurchaseOrderController@listPO');
+    $router->get('/list-project/{p_code}', 'PurchaseOrderController@listPoProject');
     $router->post('/create', 'PurchaseOrderController@createPO');
     $router->get('/{type}/{id}', 'PurchaseOrderController@approval');
 });
@@ -68,6 +69,11 @@ Route::group([
     $router->get('/project-detail/{code}', 'ProjectController@projectDetail');
     $router->get('/task_detail/{code}', 'ProjectController@tasktDetail');
     $router->get('/get-project-from-customer/{code}', 'ProjectController@getProjectFromCustomer');
+    $router->post('/update-percents', 'ProjectController@updatePercents');
+
+    $router->get('/material/{id}', 'ProjectController@getMaterial');
+
+    $router->get('/period/{code}', 'ProjectController@projectPeriodDetail');
 });
 
 Route::group([

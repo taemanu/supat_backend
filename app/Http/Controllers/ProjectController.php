@@ -208,7 +208,60 @@ class ProjectController extends Controller
 
     }
 
+    public function updatePercents(Request $request)
+    {
+        $validatedData = $request->validate([
+            'id_project' => 'required|integer',
+            'percent' => 'required|numeric',
+        ]);
+
+        $project_task = ProjectTask::where('id', $request->id_project)->first();
+
+        if ($project_task) {
+            $project_task->status = 'success';
+            $project_task->percent = $request->percent??0;
+            $project_task->save();
+
+            $project = Project::FindId($project_task->p_code)->first();
+
+            if ($project) {
+
+                $project->increment('percent', $validatedData['percent']);
+
+                if ($project->percent == 100) {
+                    $project->update(['status' => 'success']);
+                }
 
 
+                return $this->ok($project_task, 'success !');
+            } else {
+
+                return response()->json(['error' => 'Project not found'], 404);
+            }
+
+            return $this->ok($project_task, 'success !');
+        }
+
+        return $project_task;
+    }
+
+
+    public function getMaterial($id)
+    {
+        return $id;
+    }
+
+    public function projectPeriodDetail($code)
+    {
+        $project = Project::where('p_code', $code)->first();
+        $quotation = Quotation::where('qt_code', $project->id_qt)->first();
+
+        $data = [
+            'project' => $project,
+            'quotation' => $quotation,
+        ];
+
+        return $this->ok($data, 'success!');
+    }
 
 }

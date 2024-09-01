@@ -29,6 +29,14 @@ class PurchaseOrderController extends Controller
         return $this->ok($data, 'success !');
     }
 
+    public function listPoProject($p_code) {
+
+        $data = PurchaseOrder::where('code_project',$p_code)
+        ->orderBy('id','desc')
+        ->get();
+        return $this->ok($data, 'success !');
+    }
+
     public function createPO(Request $request) {
 
         $validated = $request->validate([
