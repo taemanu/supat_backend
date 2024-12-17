@@ -89,3 +89,12 @@ Route::group([
     $router->put('/compensationUpdate/{id}', 'EmployeeController@compensationUpdate');
     $router->delete('/compensationDestroy/{id}', 'EmployeeController@compensationDestroy');
 });
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'master'
+], function ($router) {
+    $router->get('garage/list', 'MasterGarageController@list');
+    $router->get('garage/detail/{id}', 'MasterGarageController@detail');
+    $router->post('garage/store', 'MasterGarageController@store');
+});
