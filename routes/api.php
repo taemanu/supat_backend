@@ -74,6 +74,10 @@ Route::group([
     $router->get('/material/{id}', 'ProjectController@getMaterial');
 
     $router->get('/period/{code}', 'ProjectController@projectPeriodDetail');
+
+    $router->get('/project-customer', 'CustomerController@listProjectCustomer');
+
+
 });
 
 Route::group([

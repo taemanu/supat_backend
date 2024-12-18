@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Customer;
 use Illuminate\Http\Request;
+use App\ProjectGarageCustomer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
@@ -68,6 +69,13 @@ class CustomerController extends Controller
     public function listCustomer()
     {
         $data_list = Customer::Select('customers.*','quotations.id as id_qt')->LeftJoin('quotations', 'quotations.customer_code', '=', 'customers.customer_code')->orderBy('customers.id','desc')->get();
+
+        return $data_list;
+    }
+
+    public function listProjectCustomer()
+    {
+        $data_list = ProjectGarageCustomer::LeftJoin('customers','customers.customer_code', '=', 'project_garage_customer.customer_code')->get();
 
         return $data_list;
     }
