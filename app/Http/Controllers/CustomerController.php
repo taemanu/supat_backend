@@ -75,7 +75,9 @@ class CustomerController extends Controller
 
     public function listProjectCustomer()
     {
-        $data_list = ProjectGarageCustomer::LeftJoin('customers','customers.customer_code', '=', 'project_garage_customer.customer_code')->get();
+        $data_list = ProjectGarageCustomer::Select('customers.*','project_garage_customer.*','quotations.id as qt_id')
+        ->LeftJoin('customers','customers.customer_code', '=', 'project_garage_customer.customer_code')
+        ->LeftJoin('quotations','quotations.project_id', '=', 'project_garage_customer.id')->get();
 
         return $data_list;
     }

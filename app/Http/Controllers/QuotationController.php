@@ -6,6 +6,7 @@ use App\Customer;
 use App\Quotation;
 use App\QuotationList;
 use Illuminate\Http\Request;
+use App\ProjectGarageCustomer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
@@ -28,7 +29,9 @@ class QuotationController extends Controller
 
     public function create($id) {
 
-        $customer = Customer::findId($id)->first();
+        // $customer = Customer::findId($id)->first();
+        $project_garage_customer = ProjectGarageCustomer::findId($id)->first();
+
         $config = [
             'table' => 'quotations',
             'field' => 'qt_code',
@@ -40,7 +43,8 @@ class QuotationController extends Controller
         $qt_code = IdGenerator::generate($config);
         $res = [
             'qt_code' => $qt_code,
-            'customer_data' => $customer
+            'customer_data' => $project_garage_customer->customer_code,
+            'project_data' => $project_garage_customer
         ];
         return $this->ok($res, 'OK');
     }
@@ -54,17 +58,30 @@ class QuotationController extends Controller
                 'qt_name' => 'required|string|max:255',
                 'customer_code' => 'required|string|max:50',
                 'total_price' => 'required|numeric',
+                'project_data' => 'required',
                 'qt_list' => 'required|array|min:1',
                 'qt_list.*.q_name' => 'required|string|max:255',
                 'qt_list.*.amount' => 'required|numeric',
                 'qt_list.*.price' => 'required|numeric',
             ]);
 
+
             $data = new Quotation;
             $data->qt_name = $validatedData['qt_name'];
             $data->customer_code = $validatedData['customer_code'];
             $data->total_price = $validatedData['total_price'];
+            $data->project_id = $validatedData['project_data']['id'];
+            $data->project_code = $validatedData['project_data']['project_code'];
+            $data->type = $validatedData['project_data']['type'];
             $data->save();
+
+            $projectId = $validatedData['project_data']['id'];
+
+            $project = ProjectGarageCustomer::find($projectId);
+
+            if ($project) {
+                $project->update(['status' => 'qt_success']);
+            }
 
             foreach ($validatedData['qt_list'] as $item) {
                 $dataList = new QuotationList;
@@ -91,7 +108,12 @@ class QuotationController extends Controller
 
     public function edit($id) {
         $data = Quotation::with('quotationList')->find($id);
-        return $this->ok($data,'ok');
+
+        $project = DB::table('project_garage_customer')
+                ->where('id', '=', $data->project_id)
+                ->first();
+
+        return $this->ok(['data' => $data,'project' => $project],'ok');
     }
 
     public function update(Request $request, $id) {

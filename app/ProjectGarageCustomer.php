@@ -11,4 +11,9 @@ class ProjectGarageCustomer extends Model
     protected $guarded = [
         'id'
     ];
+
+    public function scopeFindId($query,$id)
+    {
+        return $query->where('id',$id);
+    }
 }
