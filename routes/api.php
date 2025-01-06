@@ -57,6 +57,10 @@ Route::group([
     $router->get('/edit/{id}', 'QuotationController@edit');
     $router->post('/update/{id}', 'QuotationController@update');
     $router->delete('/destroy/{id}', 'QuotationController@destroy');
+
+    $router->get('customer/list', 'QuotationController@CustomerList');
+
+    $router->post('update_status/{id}', 'QuotationController@UpdateStatus');
 });
 
 Route::group([

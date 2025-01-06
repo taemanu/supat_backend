@@ -73,6 +73,7 @@ class QuotationController extends Controller
             $data->project_id = $validatedData['project_data']['id'];
             $data->project_code = $validatedData['project_data']['project_code'];
             $data->type = $validatedData['project_data']['type'];
+            $data->status = 'qt_approve';
             $data->save();
 
             $projectId = $validatedData['project_data']['id'];
@@ -80,7 +81,7 @@ class QuotationController extends Controller
             $project = ProjectGarageCustomer::find($projectId);
 
             if ($project) {
-                $project->update(['status' => 'qt_success']);
+                $project->update(['status' => 'qt_approve']);
             }
 
             foreach ($validatedData['qt_list'] as $item) {
@@ -174,4 +175,47 @@ class QuotationController extends Controller
 
         return $this->ok([],'success !');
     }
+
+    public function CustomerList()
+    {
+        $data_list = Quotation::select(
+            'quotations.*',
+            'customers.id as customer_id',
+            'customers.customer_code as customer_code',
+            'customers.firstname',
+            'customers.lastname',
+            'project_garage_customer.project_name'
+            )
+            ->leftjoin('customers','customers.customer_code','quotations.customer_code')
+            ->leftjoin('project_garage_customer','project_garage_customer.id','quotations.project_id')
+            ->get();
+
+            return $data_list;
+    }
+
+    public function UpdateStatus(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            // Find the quotation by ID
+            $quotation = Quotation::findOrFail($id);
+
+            // Update the status column to 'qt_success'
+            $quotation->status = 'qt_success';
+            $quotation->save();
+
+            DB::commit();
+
+            return $this->ok($quotation, 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollback();
+            Log::error('Validation failed: ' . json_encode($e->errors()));
+            return $this->ERROR('ข้อมูลไม่ถูกต้อง: ' . json_encode($e->errors()));
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Error saving quotation: ' . $e->getMessage());
+            return $this->ERROR('เกิดข้อผิดพลาด: ' . $e->getMessage());
+        }
+    }
+
 }

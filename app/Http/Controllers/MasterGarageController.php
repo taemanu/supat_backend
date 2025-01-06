@@ -64,7 +64,7 @@ class MasterGarageController extends Controller
             $data->garage_sheet_type = $validatedData['type_sheet'];
             $data->garage_sheet_color = $validatedData['sheet_color'];
             $data->garage_note = $request->note ;
-            $data->status = 'pending';
+            $data->status = 'qt_pending';
             $data->save();
 
 
