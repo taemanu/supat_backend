@@ -204,6 +204,10 @@ class QuotationController extends Controller
             $quotation->status = 'qt_success';
             $quotation->save();
 
+            $project = ProjectGarageCustomer::findOrFail($quotation->project_id);
+            $project->status = 'qt_success';
+            $project->save();
+
             DB::commit();
 
             return $this->ok($quotation, 'บันทึกข้อมูลเรียบร้อยแล้ว');
