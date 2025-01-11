@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DateTimeImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +48,8 @@ class AuthController extends Controller
                     'permission_menu' => $user->role,
                     'access_token' => $token,
                 ];
+
+                // Log::info('response->'. json_encode($response));
 
                 return $this->OK($response, 'login success');
             } else {
