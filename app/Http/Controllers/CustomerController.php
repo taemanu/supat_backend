@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Customer;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\ProjectGarageCustomer;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 
@@ -44,7 +46,32 @@ class CustomerController extends Controller
             $data->img_url = '';
             $data->line_id = $request->line_id ?? '';
             $data->created_by = $user_login->id ;
-            $data->save();
+
+
+            Log::info('Created Customer '. json_encode($data) );
+
+            if($data){
+                $password = Str::random(10);
+                $user_id = 'customers-' . str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
+
+                // Save user data
+                $user = new User;
+                $user->email = $data->email;
+                $user->name = $data->firstname . ' ' . $data->lastname;
+                $user->password = Hash::make($password);
+                $user->password_user = $password;
+                $user->user_id = $user_id;
+                $user->status = 'active';
+                $user->role = 'customer';
+                $user->save();
+
+                Log::info('Created User '. json_encode($user) );
+            }
+
+            if($user){
+                $data->user_id = $user->id;
+                $data->save();
+            }
 
             DB::commit();
 
@@ -75,7 +102,11 @@ class CustomerController extends Controller
 
     public function listCustomer()
     {
-        $data_list = Customer::Select('customers.*','quotations.id as id_qt')->LeftJoin('quotations', 'quotations.customer_code', '=', 'customers.customer_code')->orderBy('customers.id','desc')->get();
+        $data_list = Customer::Select('customers.*','quotations.id as id_qt','users.user_id')
+                            ->LeftJoin('quotations', 'quotations.customer_code', '=', 'customers.customer_code')
+                            ->LeftJoin('users', 'users.id', '=', 'customers.user_id')
+                            ->orderBy('customers.id','desc')
+                            ->get();
 
         return $data_list;
     }

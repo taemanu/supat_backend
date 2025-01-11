@@ -65,7 +65,7 @@ class AuthController extends Controller
      */
     public function user()
     {
-        Log::info('user() -> '.auth()->user());
+        // Log::info('user() -> '.auth()->user());
 
         return response()->json(auth()->user());
     }
