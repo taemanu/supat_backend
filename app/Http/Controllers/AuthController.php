@@ -49,8 +49,6 @@ class AuthController extends Controller
                     'access_token' => $token,
                 ];
 
-                // Log::info('response->'. json_encode($response));
-
                 return $this->OK($response, 'login success');
             } else {
                 return $this->ERROR("Oops! Look like your password is incorrect");
@@ -67,6 +65,7 @@ class AuthController extends Controller
      */
     public function user()
     {
+        Log::info('user() -> '.auth()->user());
 
         return response()->json(auth()->user());
     }

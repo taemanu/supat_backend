@@ -5,13 +5,19 @@ use App\Customer;
 use Illuminate\Http\Request;
 use App\ProjectGarageCustomer;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Auth;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
+
 
 class CustomerController extends Controller
 {
     public function store(Request $request)
     {
+
+        $user_login = Auth::user();
 
         $config = [
             'table' => 'customers',
@@ -36,16 +42,17 @@ class CustomerController extends Controller
             $data->status = $request->status == 1 ? 'active' : 'inactive';
             $data->tel = $request->tel ?? '';
             $data->img_url = '';
-            $data->created_by = 0;
+            $data->line_id = $request->line_id ?? '';
+            $data->created_by = $user_login->id ;
             $data->save();
 
             DB::commit();
 
-            return $this->ok([], 'success !');
+            return $this->ok([], 'บันทึกสำเร็จ !');
         } catch (\Exception $e) {
             DB::rollback();
             Log::info("error".$e);
-            return $this->ERROR("Oops! There was some problem. Please try again.");
+            return $this->ERROR("ขออภัย มีปัญหาเกิดขึ้น กรุณาลองใหม่อีกครั้ง");
         }
     }
 
@@ -57,11 +64,11 @@ class CustomerController extends Controller
             $customer->status = $customer->status === "active" ? 'inactive' : 'active';
             $customer->save();
 
-            return $this->ok([], 'success !');
+            return $this->ok([], 'บันทึกสำเร็จ !');
         }
 
         return response()->json([
-            'message' => 'Customer not found.'
+            'message' => 'ขออภัย มีปัญหาเกิดขึ้น กรุณาลองใหม่อีกครั้ง'
         ], 404);
 
     }
