@@ -83,6 +83,40 @@ class CustomerController extends Controller
         }
     }
 
+    public function update(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+
+            $customer = new Customer;
+            $data_update = $customer->findOrFail($request->id_customer);
+
+            $data_update->update([
+                'address' =>$request->address ?? $data_update->address,
+                'email' =>$request->email ?? $data_update->email,
+                'id_tax' =>$request->id_card ?? $data_update->id_tax,
+                'firstname' =>$request->firstname ?? $data_update->firstname,
+                'lastname' =>$request->lastname ?? $data_update->lastname,
+                'remark' =>$request->note ?? $data_update->remark,
+                'status' =>$request->status  == 1 ? 'active' : 'inactive',
+                'tel' =>$request->tel ?? $data_update->tel,
+                'line_id' =>$request->line_id ?? $data_update->line_id,
+            ]);
+
+
+            DB::commit();
+
+            return $this->ok([], 'บันทึกสำเร็จ !');
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::info("error".$e);
+            return $this->ERROR("ขออภัย มีปัญหาเกิดขึ้น กรุณาลองใหม่อีกครั้ง");
+        }
+
+        return  $request;
+    }
+
     public function ChangeStatus(Request $request)
     {
         $customer = Customer::FindId($request->id_customer)->first();
@@ -102,7 +136,7 @@ class CustomerController extends Controller
 
     public function listCustomer()
     {
-        $data_list = Customer::Select('customers.*','quotations.id as id_qt','users.user_id')
+        $data_list = Customer::Select('customers.*','quotations.id as id_qt','users.user_id','users.password_user')
                             ->LeftJoin('quotations', 'quotations.customer_code', '=', 'customers.customer_code')
                             ->LeftJoin('users', 'users.id', '=', 'customers.user_id')
                             ->orderBy('customers.id','desc')

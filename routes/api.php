@@ -43,6 +43,7 @@ Route::group([
     'prefix' => 'customer'
 ], function ($router) {
     $router->post('/store', 'CustomerController@store');
+    $router->post('/update', 'CustomerController@update');
     $router->get('/get-data-list', 'CustomerController@listCustomer');
     $router->post('/change-status', 'CustomerController@ChangeStatus');
 });
