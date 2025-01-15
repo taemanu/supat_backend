@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
+    protected $guarded = [
+        'id'
+    ];
+
     protected static function boot()
     {
         parent::boot();

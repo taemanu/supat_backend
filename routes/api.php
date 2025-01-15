@@ -92,6 +92,7 @@ Route::group([
     $router->get('/', 'EmployeeController@index');
     $router->get('/get-data-list', 'EmployeeController@listEmployee');
     $router->post('/store', 'EmployeeController@store');
+    $router->post('/update', 'EmployeeController@update');
     $router->get('/edit/{id}', 'EmployeeController@edit');
     $router->put('/update/{id}', 'EmployeeController@update');
     $router->get('/listCompensation/{id}', 'EmployeeController@listCompensation');

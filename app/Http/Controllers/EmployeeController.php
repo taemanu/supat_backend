@@ -102,22 +102,38 @@ class EmployeeController extends Controller
         return $this->ok($emp);
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request) {
         DB::beginTransaction();
         try {
-            $emp = new Employee;
-            $emp->name = $request->name;
-            $emp->role = $request->role;
-            $emp->tel = $request->tel;
-            $emp->slary = $request->slary;
-            $emp->user_id = $request->user_id;
-            $emp->save();
+
+            $employee = new Employee;
+            $data_update = $employee->findOrFail($request->id_employee);
+
+            $data_update->update([
+                'address' => $request->address ?? '',
+                'position' => $request->position ?? '',
+                'salary' => $request->salary ?? '',
+                'email' => $request->email ?? '',
+                'id_card' => $request->id_card ?? '',
+                'firstname' => $request->firstname ?? '',
+                'lastname' => $request->lastname ?? '',
+                'gender' => $request->gender ?? '',
+                'dob' => $request->dob ?? '',
+                'start_date' => $request->start_date ?? '',
+                'note' => $request->note ?? '',
+                'employment_status' => $request->employment_status,
+                'tel' => $request->tel ?? '',
+                'line_id' => $request->line_id ?? '',
+            ]);
+
+
             DB::commit();
-            return $this->ok(null);
+
+            return $this->ok([], 'บันทึกสำเร็จ !');
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('error: '.$e->getMessage());
-            return $this->ERROR('เกิดข้อผิดพลาดบางอย่าง !');
+            Log::info("error".$e);
+            return $this->ERROR("ขออภัย มีปัญหาเกิดขึ้น กรุณาลองใหม่อีกครั้ง");
         }
     }
 
