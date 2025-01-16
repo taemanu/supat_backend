@@ -25,6 +25,7 @@ Route::group([
     $router->post('/logout', 'AuthController@logout');
     $router->post('/refresh', 'AuthController@refresh');
     $router->post('/user', 'AuthController@user');
+    $router->get('/get-data-list', 'UsersController@index');
 
 });
 
